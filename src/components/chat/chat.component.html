@@ -1,0 +1,384 @@
+@if (currentUser()) {
+<div class="flex flex-col h-screen w-screen bg-gradient-to-br from-[var(--bg-gradient-from)] to-[var(--bg-gradient-to)] dark:from-[var(--dark-bg-gradient-from)] dark:to-[var(--dark-bg-gradient-to)] text-slate-800 dark:text-slate-200">
+  <!-- Header -->
+  <header class="flex-shrink-0 bg-transparent absolute top-0 left-0 right-0 z-10">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <h1 class="text-xl font-bold text-slate-700 dark:text-slate-200">Lightspace</h1>
+      <div class="flex items-center gap-2">
+         <button (click)="toggleMoodModal(true)" title="Log Mood" class="p-2 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm hover:bg-white/80 dark:hover:bg-slate-700/70 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a.75.75 0 01.088 1.054l-.088.094a.75.75 0 01-1.054-.088l-.094-.088a5 5 0 00-7.072 0 1 1 0 01-1.414-1.414 7 7 0 019.9 0c.39.391.39.984 0 1.374z" clip-rule="evenodd" />
+          </svg>
+        </button>
+        <button (click)="toggleSettingsModal(true)" title="Settings" class="p-2 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm hover:bg-white/80 dark:hover:bg-slate-700/70 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01-.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+          </svg>
+        </button>
+        <button (click)="toggleCrisisModal(true)" class="px-3 py-1.5 text-sm font-semibold text-red-700 dark:text-red-300 bg-red-100/80 dark:bg-red-900/50 backdrop-blur-sm rounded-full hover:bg-red-200 dark:hover:bg-red-800/70 transition-colors">
+          Crisis Help
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Chat Area -->
+  <main #chatContainer class="flex-grow overflow-y-auto p-4 md:p-6 pt-20 pb-4">
+    <div class="max-w-4xl mx-auto flex flex-col space-y-2">
+      @for (message of messages(); track message.id) {
+        <div class="group relative flex items-end gap-3" 
+             [class.flex-row-reverse]="message.role === 'user'"
+             (mouseenter)="hoveredMessageId.set(message.id)" (mouseleave)="hoveredMessageId.set(null)">
+          <!-- Avatar -->
+          <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center self-start" [class]="message.role === 'user' ? 'bg-slate-300 dark:bg-slate-600' : 'bg-white dark:bg-slate-700'">
+            @if(message.role === 'assistant') {
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[rgb(var(--primary))]" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 2a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2zM5.404 4.343a.75.75 0 010 1.06l-1.06 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm9.192 0a.75.75 0 011.06 0l1.06 1.06a.75.75 0 11-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zM2 10a.75.75 0 01.75-.75h3.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10zm14.25.75a.75.75 0 000-1.5h-3.5a.75.75 0 000 1.5h3.5zM6.464 14.596a.75.75 0 01-1.06 0l-1.06-1.06a.75.75 0 111.06-1.06l1.06 1.06a.75.75 0 010 1.06zm7.072 0a.75.75 0 010-1.06l1.06-1.06a.75.75 0 111.06 1.06l-1.06 1.06a.75.75 0 01-1.06 0zM10 18a.75.75 0 01-.75-.75v-3.5a.75.75 0 011.5 0v3.5A.75.75 0 0110 18z" clip-rule="evenodd" />
+              </svg>
+            } @else {
+               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 dark:text-slate-300" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+              </svg>
+            }
+          </div>
+          <!-- Bubble and Toolbar -->
+          <div class="w-full flex items-center gap-2" [class.flex-row-reverse]="message.role === 'user'">
+            <div class="max-w-lg lg:max-w-2xl">
+              @if(editingMessage()?.id === message.id) {
+                <div class="flex flex-col gap-2 w-full">
+                  <textarea appTextareaAutoresize
+                    class="w-full px-3 py-2 bg-white dark:bg-slate-600 border-2 border-[rgb(var(--primary))] rounded-lg focus:outline-none focus:ring-1 focus:ring-[rgb(var(--primary))] resize-none"
+                    [ngModel]="editingMessage()?.content"
+                    (ngModelChange)="editingMessage.set({ id: message.id, content: $event })"
+                    (keydown.enter)="!$event.shiftKey && saveEdit(); $event.shiftKey || $event.preventDefault()"
+                    (keydown.escape)="cancelEditing()"
+                  ></textarea>
+                  <div class="flex items-center justify-end gap-2">
+                    <button (click)="cancelEditing()" class="px-3 py-1 text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-md">Cancel</button>
+                    <button (click)="saveEdit()" class="px-3 py-1 text-sm font-medium text-white bg-[rgb(var(--primary))] hover:bg-[rgb(var(--primary-focus))] rounded-md">Save</button>
+                  </div>
+                </div>
+              } @else {
+                <div class="px-4 py-3 rounded-2xl shadow-sm" 
+                  [class]="message.role === 'user' ? 'bg-gradient-to-br from-[var(--user-bubble-from)] to-[var(--user-bubble-to)] text-white shadow-md' : 'bg-white dark:bg-slate-700 assistant-bubble-texture'">
+                  <p class="whitespace-pre-wrap">{{ message.content }}</p>
+                </div>
+              }
+            </div>
+            <!-- Toolbar -->
+            <div class="flex-shrink-0 self-center transition-opacity duration-200" [class.opacity-0]="hoveredMessageId() !== message.id && copiedMessageId() !== message.id && editingMessage()?.id !== message.id" [class.group-hover:opacity-100]="editingMessage()?.id !== message.id">
+               @if(message.id !== 'init1' && editingMessage()?.id !== message.id) {
+                <div class="flex items-center gap-1">
+                  <button (click)="copyMessage(message.content, message.id)" title="Copy" class="p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-md">
+                    @if(copiedMessageId() === message.id) {
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                    } @else {
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                    }
+                  </button>
+                  @if(message.role === 'user') {
+                    <button (click)="startEditing(message)" title="Edit" class="p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-md">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+      @if (isLoading() && messages().length > 0) {
+        <div class="flex items-end gap-3">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[rgb(var(--primary))]" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 2a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2zM5.404 4.343a.75.75 0 010 1.06l-1.06 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm9.192 0a.75.75 0 011.06 0l1.06 1.06a.75.75 0 11-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zM2 10a.75.75 0 01.75-.75h3.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10zm14.25.75a.75.75 0 000-1.5h-3.5a.75.75 0 000 1.5h3.5zM6.464 14.596a.75.75 0 01-1.06 0l-1.06-1.06a.75.75 0 111.06-1.06l1.06 1.06a.75.75 0 010 1.06zm7.072 0a.75.75 0 010-1.06l1.06-1.06a.75.75 0 111.06 1.06l-1.06 1.06a.75.75 0 01-1.06 0zM10 18a.75.75 0 01-.75-.75v-3.5a.75.75 0 011.5 0v3.5A.75.75 0 0110 18z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="max-w-lg lg:max-w-2xl px-4 py-3 rounded-2xl bg-white dark:bg-slate-700 shadow-sm assistant-bubble-texture">
+            <div class="flex items-center space-x-2">
+              <span class="h-2 w-2 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+              <span class="h-2 w-2 bg-slate-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+              <span class="h-2 w-2 bg-slate-400 rounded-full animate-bounce"></span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </main>
+
+  <!-- Input Area -->
+  <footer class="flex-shrink-0 bg-transparent p-4 md:p-6">
+    <div class="max-w-4xl mx-auto">
+      <div class="relative flex items-end space-x-3 bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-2 shadow-lg border border-slate-200 dark:border-slate-700">
+        <!-- Mode Selector Dropdown -->
+        <div class="relative">
+          <button (click)="showModeSelector.set(!showModeSelector())" title="Change Mode" class="flex-shrink-0 w-11 h-11 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-600">
+             <span class="text-xl">{{ currentModeIcon() }}</span>
+          </button>
+          @if(showModeSelector()) {
+            <div class="absolute bottom-full mb-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 p-2 animate-in fade-in zoom-in-95">
+              @for(mode of therapyModes; track mode.id) {
+                <button (click)="changeMode(mode.id)" class="w-full text-left flex items-center gap-3 p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700" [class.bg-slate-100]="currentMode() === mode.id" [class.dark:bg-slate-700]="currentMode() === mode.id">
+                  <span class="text-xl">{{ mode.icon }}</span>
+                  <div>
+                    <p class="font-semibold">{{ mode.label }}</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ mode.description }}</p>
+                  </div>
+                </button>
+              }
+            </div>
+          }
+        </div>
+        
+        <textarea #textarea appTextareaAutoresize class="flex-grow p-2.5 bg-transparent focus:ring-0 resize-none border-none max-h-40" rows="1" placeholder="What's on your mind?" [ngModel]="userInput()" (ngModelChange)="userInput.set($event)" (keydown)="handleKeydown($event)"></textarea>
+        
+        <button (click)="sendMessage()" [disabled]="userInput().trim() === '' || isLoading()" class="flex-shrink-0 w-11 h-11 bg-[rgb(var(--primary))] text-white rounded-xl flex items-center justify-center transition-all duration-200 ease-in-out disabled:bg-slate-400 disabled:dark:bg-slate-600 disabled:cursor-not-allowed hover:bg-[rgb(var(--primary-focus))] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[rgb(var(--primary))] dark:ring-offset-slate-800">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- Settings Modal -->
+@if (showSettingsModal()) {
+  <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 animate-in fade-in" (click)="toggleSettingsModal(false)">
+    <div class="bg-white dark:bg-slate-800 rounded-lg shadow-xl w-11/12 max-w-2xl animate-in fade-in zoom-in-95" (click)="$event.stopPropagation()">
+      <div class="p-6 md:p-8">
+        <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">Settings</h2>
+        
+        <div class="border-b border-slate-200 dark:border-slate-700">
+          <nav class="-mb-px flex space-x-6">
+            <button (click)="settingsTab.set('theme')" class="py-3 px-1 border-b-2 font-medium text-sm" [class.border-[rgb(var(--primary))]]="settingsTab() === 'theme'" [class.text-[rgb(var(--primary))]]="settingsTab() === 'theme'" [class.border-transparent]="settingsTab() !== 'theme'" [class.text-slate-500]="settingsTab() !== 'theme'" [class.hover:text-slate-700]="settingsTab() !== 'theme'" [class.dark:text-slate-400]="settingsTab() !== 'theme'" [class.dark:hover:text-slate-300]="settingsTab() !== 'theme'">
+              Theme
+            </button>
+            <button (click)="settingsTab.set('mood')" class="py-3 px-1 border-b-2 font-medium text-sm" [class.border-[rgb(var(--primary))]]="settingsTab() === 'mood'" [class.text-[rgb(var(--primary))]]="settingsTab() === 'mood'" [class.border-transparent]="settingsTab() !== 'mood'" [class.text-slate-500]="settingsTab() !== 'mood'" [class.hover:text-slate-700]="settingsTab() !== 'mood'" [class.dark:text-slate-400]="settingsTab() !== 'mood'" [class.dark:hover:text-slate-300]="settingsTab() !== 'mood'">
+              My Mood
+            </button>
+            <button (click)="settingsTab.set('account')" class="py-3 px-1 border-b-2 font-medium text-sm" [class.border-[rgb(var(--primary))]]="settingsTab() === 'account'" [class.text-[rgb(var(--primary))]]="settingsTab() === 'account'" [class.border-transparent]="settingsTab() !== 'account'" [class.text-slate-500]="settingsTab() !== 'account'" [class.hover:text-slate-700]="settingsTab() !== 'account'" [class.dark:text-slate-400]="settingsTab() !== 'account'" [class.dark:hover:text-slate-300]="settingsTab() !== 'account'">
+              Account
+            </button>
+          </nav>
+        </div>
+
+        <div class="pt-6">
+          @switch (settingsTab()) {
+            @case ('theme') {
+              <div>
+                <h3 class="font-semibold text-slate-800 dark:text-slate-100 mb-3">Choose a Theme</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  @for (theme of themeService.themes(); track theme.id) {
+                    <button (click)="selectTheme(theme)" class="flex flex-col items-center p-3 rounded-lg border-2 transition-colors" [class.border-[rgb(var(--primary))] ]="themeService.currentTheme().id === theme.id" [class.border-slate-200]="themeService.currentTheme().id !== theme.id" [class.dark:border-slate-600]="themeService.currentTheme().id !== theme.id">
+                      <div class="w-10 h-10 rounded-full mb-2" [style.backgroundColor]="theme.color"></div>
+                      <span class="text-sm font-medium">{{ theme.name }}</span>
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+            @case ('account') {
+               <div>
+                  <h3 class="font-semibold text-slate-800 dark:text-slate-100 mb-3">Account Details</h3>
+                  <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Signed in as {{ currentUser()?.email }}</p>
+                  <button (click)="signOut()" class="w-full px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
+                    Sign Out
+                  </button>
+                </div>
+            }
+            @case ('mood') {
+              <div>
+                <h3 class="font-semibold text-slate-800 dark:text-slate-100 mb-3">Mood History</h3>
+                @if (moodHistory().length > 0) {
+                  <div class="max-h-80 overflow-y-auto pr-2 space-y-3">
+                    @for (mood of moodHistory(); track mood.id) {
+                      <div class="p-3 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
+                        <div class="flex items-center justify-between">
+                           <div class="flex items-center gap-3">
+                             <span class="text-3xl">{{ getMoodEmoji(mood.rating) }}</span>
+                             <div>
+                               <p class="font-semibold">{{ mood.created_at | date:'longDate' }}</p>
+                               <p class="text-xs text-slate-500 dark:text-slate-400">{{ mood.created_at | date:'shortTime' }}</p>
+                             </div>
+                           </div>
+                        </div>
+                         @if(mood.emotions && mood.emotions.length > 0) {
+                          <div class="mt-2 flex flex-wrap gap-2">
+                            @for(emotion of mood.emotions; track emotion) {
+                              <span class="px-2 py-0.5 text-xs bg-slate-200 dark:bg-slate-600 rounded-full">{{emotion}}</span>
+                            }
+                          </div>
+                        }
+                        @if (mood.note) {
+                           <p class="text-sm mt-2 pt-2 border-t border-slate-200 dark:border-slate-600 italic text-slate-600 dark:text-slate-300">"{{ mood.note }}"</p>
+                        }
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <p class="text-sm text-slate-500 dark:text-slate-400 text-center py-8">No mood entries yet. Click the smiley face in the header to log how you're feeling.</p>
+                }
+              </div>
+            }
+          }
+        </div>
+      </div>
+
+      <div class="bg-slate-50 dark:bg-slate-700/50 px-6 py-4 rounded-b-lg text-right">
+        <button (click)="toggleSettingsModal(false)" class="px-4 py-2 bg-[rgb(var(--primary))] text-[rgb(var(--primary-content))] font-semibold rounded-lg hover:bg-[rgb(var(--primary-focus))] transition-colors">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Crisis Modal -->
+@if (showCrisisModal()) {
+  <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 animate-in fade-in" (click)="toggleCrisisModal(false)">
+    <div class="bg-white dark:bg-slate-800 rounded-lg shadow-xl p-6 md:p-8 max-w-lg w-11/12 animate-in fade-in zoom-in-95" (click)="$event.stopPropagation()">
+      <h2 class="text-2xl font-bold text-red-600 dark:text-red-400 mb-4">Immediate Help is Available</h2>
+      <p class="mb-4 text-slate-600 dark:text-slate-300">If you are in a crisis or any other person may be in danger, please don't use this app. These resources can provide you with immediate help.</p>
+      <div class="space-y-4">
+        <div>
+          <h3 class="font-semibold text-slate-800 dark:text-slate-100">988 Suicide & Crisis Lifeline (US)</h3>
+          <p class="text-slate-600 dark:text-slate-300">Call or text <strong class="text-lg">988</strong> anytime in the US and Canada.</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-slate-800 dark:text-slate-100">Crisis Text Line</h3>
+          <p class="text-slate-600 dark:text-slate-300">Text <strong class="text-lg">HOME</strong> to <strong class="text-lg">741741</strong> to connect with a crisis counselor.</p>
+        </div>
+         <div>
+          <h3 class="font-semibold text-slate-800 dark:text-slate-100">Emergency Services</h3>
+          <p class="text-slate-600 dark:text-slate-300">In case of a medical emergency, call <strong class="text-lg">911</strong> (in the US) or your local emergency number.</p>
+        </div>
+      </div>
+      <div class="mt-6 text-right">
+        <button (click)="toggleCrisisModal(false)" class="px-4 py-2 bg-[rgb(var(--primary))] text-[rgb(var(--primary-content))] font-semibold rounded-lg hover:bg-[rgb(var(--primary-focus))] transition-colors">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Mood Modal -->
+@if (showMoodModal()) {
+  <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 animate-in fade-in" (click)="toggleMoodModal(false)">
+    <div class="bg-white dark:bg-slate-800 rounded-lg shadow-xl p-6 md:p-8 max-w-lg w-11/12 animate-in fade-in zoom-in-95" (click)="$event.stopPropagation()">
+      <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-1">How are you feeling?</h2>
+      <p class="text-slate-500 dark:text-slate-400 mb-6">Log your current mood to track trends over time.</p>
+      
+      <div class="space-y-6">
+        <div>
+          <h3 class="font-semibold text-slate-800 dark:text-slate-100 mb-3">1. Rate your mood</h3>
+          <div class="flex justify-around items-center">
+            @for(rating of [1, 2, 3, 4, 5]; track rating) {
+              <button (click)="currentRating.set(rating)" class="text-4xl p-2 rounded-full transition-transform duration-200 ease-in-out hover:scale-125" [class.bg-slate-200]="currentRating() === rating" [class.dark:bg-slate-700]="currentRating() === rating" [class.scale-125]="currentRating() === rating">
+                {{ getMoodEmoji(rating) }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div>
+           <h3 class="font-semibold text-slate-800 dark:text-slate-100 mb-3">2. What words describe this feeling? <span class="text-sm font-normal text-slate-400">(Optional)</span></h3>
+           <div class="flex flex-wrap gap-2">
+            @for(emotion of commonEmotions; track emotion) {
+              <button (click)="toggleEmotion(emotion)" class="px-3 py-1.5 text-sm font-medium rounded-full border transition-colors"
+                [class.bg-[rgb(var(--primary))]]="selectedEmotions().includes(emotion)"
+                [class.text-white]="selectedEmotions().includes(emotion)"
+                [class.border-transparent]="selectedEmotions().includes(emotion)"
+                [class.bg-slate-100]="!selectedEmotions().includes(emotion)"
+                [class.dark:bg-slate-700]="!selectedEmotions().includes(emotion)"
+                [class.border-slate-200]="!selectedEmotions().includes(emotion)"
+                [class.dark:border-slate-600]="!selectedEmotions().includes(emotion)"
+                [class.hover:bg-slate-200]="!selectedEmotions().includes(emotion)"
+                [class.dark:hover:bg-slate-600]="!selectedEmotions().includes(emotion)"
+                >
+                {{ emotion }}
+              </button>
+            }
+           </div>
+        </div>
+
+        <div>
+          <h3 class="font-semibold text-slate-800 dark:text-slate-100 mb-2">3. Add a note <span class="text-sm font-normal text-slate-400">(Optional)</span></h3>
+          <textarea [ngModel]="moodNote()" (ngModelChange)="moodNote.set($event)" rows="2" placeholder="What's contributing to this feeling?" class="w-full p-2 bg-slate-100 dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 rounded-md focus:outline-none focus:border-[rgb(var(--primary))] focus:ring-0 transition-colors"></textarea>
+        </div>
+      </div>
+      
+      <div class="mt-8 flex justify-end gap-3">
+        <button (click)="toggleMoodModal(false)" class="px-4 py-2 bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-slate-200 font-semibold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors">
+          Cancel
+        </button>
+        <button (click)="saveMood()" [disabled]="currentRating() === 0" class="px-4 py-2 bg-[rgb(var(--primary))] text-[rgb(var(--primary-content))] font-semibold rounded-lg hover:bg-[rgb(var(--primary-focus))] transition-colors disabled:bg-slate-400 disabled:dark:bg-slate-600 disabled:cursor-not-allowed">
+          Save Mood
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+} @else {
+<!-- Auth Screen -->
+<div class="flex flex-col items-center justify-center h-screen w-screen bg-gradient-to-br from-[var(--bg-gradient-from)] to-[var(--bg-gradient-to)] dark:from-[var(--dark-bg-gradient-from)] dark:to-[var(--dark-bg-gradient-to)] text-slate-800 dark:text-slate-200 p-4">
+  <div class="w-full max-w-sm">
+    <div class="text-center mb-8">
+      <div class="inline-block p-3 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl mb-4">
+        <svg class="h-12 w-12 text-[rgb(var(--primary))]" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L8 8.5L2 9.5L7 14L5.5 21L12 17.5L18.5 21L17 14L22 9.5L16 8.5L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 2V17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1 class="text-5xl font-bold text-slate-800 dark:text-slate-100">Lightspace</h1>
+      <p class="text-slate-600 dark:text-slate-300 mt-2">Your companion for reflection and support.</p>
+    </div>
+
+    <form (submit)="handleAuth(); $event.preventDefault()" class="bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm shadow-lg border border-white/30 dark:border-slate-700/50 rounded-2xl p-8 space-y-6">
+      <h2 class="text-2xl font-bold text-center text-slate-800 dark:text-slate-200">{{ isSigningUp() ? 'Create Account' : 'Sign In' }}</h2>
+      
+      <div>
+        <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
+        <input id="email" type="email" required [ngModel]="authEmail()" (ngModelChange)="authEmail.set($event)" name="email"
+               class="w-full px-3 py-2 bg-slate-100/70 dark:bg-slate-700/80 border-2 border-slate-200 dark:border-slate-600 rounded-md focus:outline-none focus:border-[rgb(var(--primary))] focus:ring-0 transition-colors">
+      </div>
+      
+      <div>
+        <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Password</label>
+        <div class="relative">
+          <input id="password" [type]="showPassword() ? 'text' : 'password'" required [ngModel]="authPassword()" (ngModelChange)="authPassword.set($event)" name="password" minlength="6"
+                 class="w-full px-3 py-2 pr-10 bg-slate-100/70 dark:bg-slate-700/80 border-2 border-slate-200 dark:border-slate-600 rounded-md focus:outline-none focus:border-[rgb(var(--primary))] focus:ring-0 transition-colors">
+          <button type="button" (click)="showPassword.set(!showPassword())" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
+            @if(showPassword()) {
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074L3.707 2.293zM10 12a2 2 0 110-4 2 2 0 010 4z" clip-rule="evenodd" /><path d="M10 17a7 7 0 01-7-7c0-1.92.76-3.664 2-4.994a7.03 7.03 0 012.353-1.637l-1.3-1.3A9 9 0 00.458 10c1.274 4.057 5.064 7 9.542 7 1.848 0 3.58-.51 5.063-1.4l-1.28-1.28A7.018 7.018 0 0110 17z" /></svg>
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
+            }
+          </button>
+        </div>
+        @if (isSigningUp()) {
+            <p class="text-xs text-slate-500 mt-1">Minimum 6 characters.</p>
+        }
+      </div>
+
+      @if(authError()) {
+        <p class="text-sm text-red-500 text-center">{{ authError() }}</p>
+      }
+      
+      <button type="submit" [disabled]="authLoading()" 
+              class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-[rgb(var(--primary-content))] bg-[rgb(var(--primary))] hover:bg-[rgb(var(--primary-focus))] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[rgb(var(--primary))] dark:ring-offset-slate-800 disabled:bg-slate-400 disabled:cursor-wait transition-colors">
+        {{ authLoading() ? (isSigningUp() ? 'Creating Account...' : 'Signing In...') : (isSigningUp() ? 'Sign Up' : 'Sign In') }}
+      </button>
+
+      <p class="text-sm text-center text-slate-600 dark:text-slate-400">
+        {{ isSigningUp() ? 'Already have an account?' : "Don't have an account?" }}
+        <button type="button" (click)="isSigningUp.set(!isSigningUp()); authError.set(null);" class="font-medium text-[rgb(var(--primary))] hover:underline">
+          {{ isSigningUp() ? 'Sign In' : 'Sign Up' }}
+        </button>
+      </p>
+    </form>
+  </div>
+</div>
+}
