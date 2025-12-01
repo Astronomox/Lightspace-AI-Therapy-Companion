@@ -12,67 +12,107 @@
     body {
       font-family: 'Inter', sans-serif;
     }
-    :root, .theme-default {
+    :root.light .theme-default, :root:not(.dark) .theme-default {
       --bg-gradient-from: #e0f2fe; /* sky-100 */
       --bg-gradient-to: #f0f9ff;   /* sky-50 */
-      --dark-bg-gradient-from: #0c4a6e; /* sky-900 */
-      --dark-bg-gradient-to: #075985; /* sky-800 */
-      
       --primary: 96 165 250; /* blue-400 */
       --primary-focus: 59 130 246; /* blue-500 */
       --primary-content: 255 255 255;
-      
       --user-bubble-from: #3b82f6; /* blue-600 */
       --user-bubble-to: #60a5fa; /* blue-400 */
     }
-    .theme-sunset {
+     :root.dark .theme-default {
+      --bg-gradient-from: #0c4a6e; /* sky-900 */
+      --bg-gradient-to: #075985; /* sky-800 */
+      --primary: 96 165 250;
+      --primary-focus: 147 197 253;
+      --primary-content: 255 255 255;
+      --user-bubble-from: #3b82f6;
+      --user-bubble-to: #2563eb;
+    }
+    :root.light .theme-sunset, :root:not(.dark) .theme-sunset {
       --bg-gradient-from: #fff7ed; /* orange-50 */
       --bg-gradient-to: #ffedd5;   /* orange-100 */
-      --dark-bg-gradient-from: #7c2d12; /* orange-900 */
-      --dark-bg-gradient-to: #9a3412; /* orange-800 */
-
       --primary: 251 146 60; /* orange-400 */
       --primary-focus: 249 115 22; /* orange-500 */
       --primary-content: 255 255 255;
-
       --user-bubble-from: #f97316; /* orange-500 */
       --user-bubble-to: #fb923c; /* orange-400 */
     }
-    .theme-forest {
+    :root.dark .theme-sunset {
+      --bg-gradient-from: #7c2d12; /* orange-900 */
+      --bg-gradient-to: #9a3412; /* orange-800 */
+      --primary: 251 146 60;
+      --primary-focus: 252 165 165;
+      --primary-content: 255 255 255;
+      --user-bubble-from: #f97316;
+      --user-bubble-to: #ea580c;
+    }
+    :root.light .theme-forest, :root:not(.dark) .theme-forest {
       --bg-gradient-from: #f0fdfa; /* cyan-50 */
       --bg-gradient-to: #ccfbf1;   /* cyan-100 */
-      --dark-bg-gradient-from: #134e4a; /* teal-900 */
-      --dark-bg-gradient-to: #115e59; /* teal-800 */
-
       --primary: 45 212 191; /* teal-400 */
       --primary-focus: 20 184 166; /* teal-500 */
       --primary-content: 255 255 255;
-      
       --user-bubble-from: #0d9488; /* teal-600 */
       --user-bubble-to: #2dd4bf; /* teal-400 */
     }
-    .theme-lavender {
+     :root.dark .theme-forest {
+      --bg-gradient-from: #134e4a; /* teal-900 */
+      --bg-gradient-to: #115e59; /* teal-800 */
+      --primary: 45 212 191;
+      --primary-focus: 94 234 212;
+      --primary-content: 255 255 255;
+      --user-bubble-from: #0d9488;
+      --user-bubble-to: #0f766e;
+    }
+    :root.light .theme-lavender, :root:not(.dark) .theme-lavender {
       --bg-gradient-from: #f5f3ff; /* violet-50 */
       --bg-gradient-to: #ede9fe;   /* violet-100 */
-      --dark-bg-gradient-from: #4c1d95; /* violet-900 */
-      --dark-bg-gradient-to: #5b21b6; /* violet-800 */
-      
       --primary: 167 139 250; /* violet-400 */
       --primary-focus: 139 92 246; /* violet-500 */
       --primary-content: 255 255 255;
-
       --user-bubble-from: #8b5cf6; /* violet-500 */
       --user-bubble-to: #a78bfa; /* violet-400 */
+    }
+    :root.dark .theme-lavender {
+      --bg-gradient-from: #4c1d95; /* violet-900 */
+      --bg-gradient-to: #5b21b6; /* violet-800 */
+      --primary: 167 139 250;
+      --primary-focus: 196 181 253;
+      --primary-content: 255 255 255;
+      --user-bubble-from: #8b5cf6;
+      --user-bubble-to: #7c3aed;
     }
     .assistant-bubble-texture {
       background-image: radial-gradient(circle, rgba(0,0,0,0.02) 1px, transparent 1px);
       background-size: 5px 5px;
     }
+    .dark .assistant-bubble-texture {
+      background-image: radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px);
+    }
+    .prose ul { list-style-type: disc; padding-left: 1.5rem; }
+    .prose ol { list-style-type: decimal; padding-left: 1.5rem; }
+    .prose strong { font-weight: 600; }
+    .prose em { font-style: italic; }
   </style>
   <script>
     (function() {
       const theme = localStorage.getItem('lightspace-theme') || 'theme-default';
-      document.documentElement.className = theme;
+      let displayMode = localStorage.getItem('lightspace-display-mode') || 'system';
+
+      document.documentElement.classList.add(theme);
+      
+      if (displayMode === 'system') {
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        displayMode = systemPrefersDark ? 'dark' : 'light';
+      }
+      
+      if (displayMode === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     })();
   </script>
 <script type="importmap">
@@ -91,7 +131,8 @@
     "@google/genai": "https://next.esm.sh/@google/genai@^1.30.0?external=rxjs",
     "@angular/forms": "https://next.esm.sh/@angular/forms@^21.0.2?external=rxjs",
     "@angular/core/rxjs-interop": "https://next.esm.sh/@angular/core@^21.0.2/rxjs-interop?external=rxjs",
-    "@supabase/supabase-js": "https://next.esm.sh/@supabase/supabase-js@^2.86.0?external=rxjs"
+    "@supabase/supabase-js": "https://next.esm.sh/@supabase/supabase-js@^2.86.0?external=rxjs",
+    "marked": "https://esm.sh/marked@^14.0.0"
   }
 }
 </script>

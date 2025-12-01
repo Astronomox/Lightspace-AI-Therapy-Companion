@@ -3,21 +3,23 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GeminiService } from '../../services/gemini.service';
 import { Message, TherapyMode, TherapyModeDetails } from '../../models/chat.model';
-import { ThemeService } from '../../services/theme.service';
+import { ThemeService, DisplayMode } from '../../services/theme.service';
 import { Theme } from '../../models/theme.model';
 import { AuthService } from '../../services/auth.service';
 import { TextareaAutoresizeDirective } from '../../directives/textarea-autoresize.directive';
 import { MoodService } from '../../services/mood.service';
 import { Mood } from '../../models/mood.model';
+import { MarkdownPipe } from '../../pipes/markdown.pipe';
 
 @Component({
   selector: 'app-chat',
-  imports: [CommonModule, FormsModule, TextareaAutoresizeDirective],
+  imports: [CommonModule, FormsModule, TextareaAutoresizeDirective, MarkdownPipe],
   templateUrl: './chat.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChatComponent {
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
+  @ViewChild('textInput') private textInput!: ElementRef<HTMLTextAreaElement>;
 
   private geminiService = inject(GeminiService);
   themeService = inject(ThemeService);
@@ -27,6 +29,7 @@ export class ChatComponent {
   // Consume state directly from services
   messages = this.geminiService.messages;
   isLoading = this.geminiService.isLoading;
+  streamingResponse = this.geminiService.streamingResponse;
   currentUser = this.authService.currentUser;
   moodHistory = this.moodService.moods;
 
@@ -36,15 +39,25 @@ export class ChatComponent {
   showSettingsModal = signal<boolean>(false);
   showModeSelector = signal<boolean>(false);
   currentMode = signal<TherapyMode>('general');
-  settingsTab = signal<'theme' | 'account' | 'mood'>('theme');
+  settingsTab = signal<'theme' | 'profile' | 'mood'>('theme');
 
   // Auth form state
-  isSigningUp = signal(false);
+  authScreen = signal<'signIn' | 'signUp' | 'forgotPassword'>('signIn');
   authEmail = signal('');
   authPassword = signal('');
+  confirmPassword = signal('');
   authError = signal<string | null>(null);
   authLoading = signal(false);
   showPassword = signal(false);
+  resetSent = signal(false);
+
+  // Computed for password validation
+  passwordsMatch = computed(() => this.authPassword() === this.confirmPassword());
+  
+  // Profile state
+  uploadingAvatar = signal(false);
+  avatarError = signal<string | null>(null);
+  userAvatarUrl = computed(() => this.currentUser()?.user_metadata?.['avatar_url'] ?? null);
 
   // Mood Modal State
   showMoodModal = signal(false);
@@ -56,6 +69,10 @@ export class ChatComponent {
   hoveredMessageId = signal<string | null>(null);
   copiedMessageId = signal<string | null>(null);
   editingMessage = signal<{ id: string, content: string } | null>(null);
+
+  // Input area state
+  charCount = computed(() => this.userInput().length);
+  showCharCount = computed(() => this.charCount() > 1800);
 
   therapyModes: TherapyModeDetails[] = [
     { id: 'general', label: 'General', description: 'A flexible, adaptive conversation.', icon: '💬' },
@@ -72,14 +89,12 @@ export class ChatComponent {
   ];
 
   constructor() {
-    // Effect to scroll to the bottom when new messages are added
     effect(() => {
-      if (this.messages().length > 0 && !this.editingMessage()) {
+      if ((this.messages().length > 0 || this.streamingResponse()) && !this.editingMessage()) {
         this.scrollToBottom();
       }
     });
 
-    // Effect to load mood history when user logs in
     effect(() => {
       if(this.currentUser()) {
         this.moodService.loadMoods();
@@ -90,17 +105,41 @@ export class ChatComponent {
   async handleAuth(): Promise<void> {
     this.authLoading.set(true);
     this.authError.set(null);
+    this.resetSent.set(false);
+
     try {
-      if (this.isSigningUp()) {
-        await this.authService.signUp(this.authEmail(), this.authPassword());
-      } else {
-        await this.authService.signIn(this.authEmail(), this.authPassword());
+      switch (this.authScreen()) {
+        case 'signIn':
+          await this.authService.signIn(this.authEmail(), this.authPassword());
+          break;
+        case 'signUp':
+          if (!this.passwordsMatch()) {
+            throw new Error("Passwords do not match.");
+          }
+          if(this.authPassword().length < 6) {
+             throw new Error("Password must be at least 6 characters.");
+          }
+          await this.authService.signUp(this.authEmail(), this.authPassword());
+          break;
+        case 'forgotPassword':
+          await this.authService.sendPasswordResetEmail(this.authEmail());
+          this.resetSent.set(true);
+          break;
       }
     } catch (error: any) {
       this.authError.set(error.message || 'An unknown error occurred.');
     } finally {
       this.authLoading.set(false);
     }
+  }
+
+  switchAuthView(view: 'signIn' | 'signUp' | 'forgotPassword'): void {
+    this.authScreen.set(view);
+    this.authEmail.set('');
+    this.authPassword.set('');
+    this.confirmPassword.set('');
+    this.authError.set(null);
+    this.resetSent.set(false);
   }
 
   async signOut(): Promise<void> {
@@ -116,8 +155,7 @@ export class ChatComponent {
 
     const prompt = this.userInput();
     this.userInput.set('');
-    this.scrollToBottom(); // scroll immediately for user message
-
+    
     await this.geminiService.sendMessage(prompt);
   }
   
@@ -140,7 +178,7 @@ export class ChatComponent {
     const editState = this.editingMessage();
     if (!editState || editState.content.trim() === '') return;
 
-    this.editingMessage.set(null); // Optimistically close editor
+    this.editingMessage.set(null);
     await this.geminiService.resubmitConversation(editState.id, editState.content.trim());
   }
 
@@ -176,7 +214,6 @@ export class ChatComponent {
 
   async saveMood(): Promise<void> {
     if (this.currentRating() === 0) return;
-    // FIX: Use snake_case properties 'user_id' and 'created_at' in Omit to match the Mood model.
     const moodEntry: Omit<Mood, 'id' | 'user_id' | 'created_at'> = {
       rating: this.currentRating(),
       emotions: this.selectedEmotions(),
@@ -216,6 +253,57 @@ export class ChatComponent {
 
   selectTheme(theme: Theme): void {
     this.themeService.setTheme(theme);
+  }
+
+  toggleDisplayMode(mode: DisplayMode): void {
+    this.themeService.setDisplayMode(mode);
+  }
+
+  async handleAvatarUpload(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    this.uploadingAvatar.set(true);
+    this.avatarError.set(null);
+    try {
+      await this.authService.uploadAvatar(file);
+    } catch (error: any) {
+      this.avatarError.set(error.message);
+    } finally {
+      this.uploadingAvatar.set(false);
+    }
+  }
+  
+  formatText(format: 'bold' | 'italic' | 'list'): void {
+    const textarea = this.textInput.nativeElement;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = this.userInput().substring(start, end);
+    let newText = '';
+
+    switch (format) {
+      case 'bold':
+        newText = `**${selectedText}**`;
+        break;
+      case 'italic':
+        newText = `*${selectedText}*`;
+        break;
+      case 'list':
+        const lines = selectedText.split('\n');
+        newText = lines.map(line => `- ${line}`).join('\n');
+        break;
+    }
+    
+    const updatedValue = this.userInput().substring(0, start) + newText + this.userInput().substring(end);
+    this.userInput.set(updatedValue);
+    
+    // Focus and set cursor position after update
+    setTimeout(() => {
+        textarea.focus();
+        const newCursorPos = start + newText.length - (format === 'list' ? 0 : selectedText.length);
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
   }
 
   private scrollToBottom(): void {

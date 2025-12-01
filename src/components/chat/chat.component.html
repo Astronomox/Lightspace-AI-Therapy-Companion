@@ -1,18 +1,22 @@
 @if (currentUser()) {
-<div class="flex flex-col h-screen w-screen bg-gradient-to-br from-[var(--bg-gradient-from)] to-[var(--bg-gradient-to)] dark:from-[var(--dark-bg-gradient-from)] dark:to-[var(--dark-bg-gradient-to)] text-slate-800 dark:text-slate-200">
+<div class="flex flex-col h-screen w-screen bg-gradient-to-br from-[var(--bg-gradient-from)] to-[var(--bg-gradient-to)] text-slate-800 dark:text-slate-200">
   <!-- Header -->
   <header class="flex-shrink-0 bg-transparent absolute top-0 left-0 right-0 z-10">
     <div class="container mx-auto px-4 py-3 flex justify-between items-center">
       <h1 class="text-xl font-bold text-slate-700 dark:text-slate-200">Lightspace</h1>
       <div class="flex items-center gap-2">
          <button (click)="toggleMoodModal(true)" title="Log Mood" class="p-2 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm hover:bg-white/80 dark:hover:bg-slate-700/70 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a.75.75 0 01.088 1.054l-.088.094a.75.75 0 01-1.054-.088l-.094-.088a5 5 0 00-7.072 0 1 1 0 01-1.414-1.414 7 7 0 019.9 0c.39.391.39.984 0 1.374z" clip-rule="evenodd" />
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+            <line x1="9" y1="9" x2="9.01" y2="9" />
+            <line x1="15" y1="9" x2="15.01" y2="9" />
           </svg>
         </button>
         <button (click)="toggleSettingsModal(true)" title="Settings" class="p-2 rounded-full bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm hover:bg-white/80 dark:hover:bg-slate-700/70 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.532 1.532 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.532 1.532 0 01-.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+            <circle cx="12" cy="12" r="3" />
           </svg>
         </button>
         <button (click)="toggleCrisisModal(true)" class="px-3 py-1.5 text-sm font-semibold text-red-700 dark:text-red-300 bg-red-100/80 dark:bg-red-900/50 backdrop-blur-sm rounded-full hover:bg-red-200 dark:hover:bg-red-800/70 transition-colors">
@@ -30,15 +34,20 @@
              [class.flex-row-reverse]="message.role === 'user'"
              (mouseenter)="hoveredMessageId.set(message.id)" (mouseleave)="hoveredMessageId.set(null)">
           <!-- Avatar -->
-          <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center self-start" [class]="message.role === 'user' ? 'bg-slate-300 dark:bg-slate-600' : 'bg-white dark:bg-slate-700'">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center self-start overflow-hidden" [class]="message.role === 'user' ? 'bg-slate-300 dark:bg-slate-600' : 'bg-white dark:bg-slate-700'">
             @if(message.role === 'assistant') {
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[rgb(var(--primary))]" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 2a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2zM5.404 4.343a.75.75 0 010 1.06l-1.06 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm9.192 0a.75.75 0 011.06 0l1.06 1.06a.75.75 0 11-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zM2 10a.75.75 0 01.75-.75h3.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10zm14.25.75a.75.75 0 000-1.5h-3.5a.75.75 0 000 1.5h3.5zM6.464 14.596a.75.75 0 01-1.06 0l-1.06-1.06a.75.75 0 111.06-1.06l1.06 1.06a.75.75 0 010 1.06zm7.072 0a.75.75 0 010-1.06l1.06-1.06a.75.75 0 111.06 1.06l-1.06 1.06a.75.75 0 01-1.06 0zM10 18a.75.75 0 01-.75-.75v-3.5a.75.75 0 011.5 0v3.5A.75.75 0 0110 18z" clip-rule="evenodd" />
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[rgb(var(--primary))]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3L9.5 8.5L4 10l4.5 4L7 21l5-3.5L17 21l-1.5-7L20 10l-5.5-1.5z"/>
               </svg>
             } @else {
-               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 dark:text-slate-300" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-              </svg>
+              @if (userAvatarUrl()) {
+                <img [src]="userAvatarUrl()" alt="User avatar" class="w-full h-full object-cover">
+              } @else {
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-500 dark:text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              }
             }
           </div>
           <!-- Bubble and Toolbar -->
@@ -59,9 +68,9 @@
                   </div>
                 </div>
               } @else {
-                <div class="px-4 py-3 rounded-2xl shadow-sm" 
-                  [class]="message.role === 'user' ? 'bg-gradient-to-br from-[var(--user-bubble-from)] to-[var(--user-bubble-to)] text-white shadow-md' : 'bg-white dark:bg-slate-700 assistant-bubble-texture'">
-                  <p class="whitespace-pre-wrap">{{ message.content }}</p>
+                <div class="px-4 py-3 rounded-2xl shadow-sm prose dark:prose-invert" 
+                  [class]="message.role === 'user' ? 'bg-gradient-to-br from-[var(--user-bubble-from)] to-[var(--user-bubble-to)] text-white shadow-md' : 'bg-white dark:bg-slate-700 assistant-bubble-texture'"
+                  [innerHTML]="message.content | markdown">
                 </div>
               }
             </div>
@@ -71,14 +80,14 @@
                 <div class="flex items-center gap-1">
                   <button (click)="copyMessage(message.content, message.id)" title="Copy" class="p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-md">
                     @if(copiedMessageId() === message.id) {
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
                     } @else {
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>
                     }
                   </button>
                   @if(message.role === 'user') {
                     <button (click)="startEditing(message)" title="Edit" class="p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600 rounded-md">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" /><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" /></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" /></svg>
                     </button>
                   }
                 </div>
@@ -87,12 +96,24 @@
           </div>
         </div>
       }
-      @if (isLoading() && messages().length > 0) {
+      <!-- Streaming Response -->
+      @if (streamingResponse(); as stream) {
+        <div class="flex items-end gap-3">
+          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center self-start">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[rgb(var(--primary))]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3L9.5 8.5L4 10l4.5 4L7 21l5-3.5L17 21l-1.5-7L20 10l-5.5-1.5z"/>
+            </svg>
+          </div>
+          <div class="max-w-lg lg:max-w-2xl px-4 py-3 rounded-2xl bg-white dark:bg-slate-700 shadow-sm assistant-bubble-texture prose dark:prose-invert" [innerHTML]="stream.content | markdown">
+          </div>
+        </div>
+      }
+      @if (isLoading() && !streamingResponse() && messages().length > 0) {
         <div class="flex items-end gap-3">
           <div class="flex-shrink-0 w-8 h-8 rounded-full bg-white dark:bg-slate-700 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[rgb(var(--primary))]" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 2a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0V2.75A.75.75 0 0110 2zM5.404 4.343a.75.75 0 010 1.06l-1.06 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm9.192 0a.75.75 0 011.06 0l1.06 1.06a.75.75 0 11-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zM2 10a.75.75 0 01.75-.75h3.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10zm14.25.75a.75.75 0 000-1.5h-3.5a.75.75 0 000 1.5h3.5zM6.464 14.596a.75.75 0 01-1.06 0l-1.06-1.06a.75.75 0 111.06-1.06l1.06 1.06a.75.75 0 010 1.06zm7.072 0a.75.75 0 010-1.06l1.06-1.06a.75.75 0 111.06 1.06l-1.06 1.06a.75.75 0 01-1.06 0zM10 18a.75.75 0 01-.75-.75v-3.5a.75.75 0 011.5 0v3.5A.75.75 0 0110 18z" clip-rule="evenodd" />
-            </svg>
+             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-[rgb(var(--primary))]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+               <path d="M12 3L9.5 8.5L4 10l4.5 4L7 21l5-3.5L17 21l-1.5-7L20 10l-5.5-1.5z"/>
+             </svg>
           </div>
           <div class="max-w-lg lg:max-w-2xl px-4 py-3 rounded-2xl bg-white dark:bg-slate-700 shadow-sm assistant-bubble-texture">
             <div class="flex items-center space-x-2">
@@ -107,36 +128,52 @@
   </main>
 
   <!-- Input Area -->
-  <footer class="flex-shrink-0 bg-transparent p-4 md:p-6">
+  <footer class="flex-shrink-0 bg-transparent p-4 md:p-6 pt-0">
     <div class="max-w-4xl mx-auto">
-      <div class="relative flex items-end space-x-3 bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl p-2 shadow-lg border border-slate-200 dark:border-slate-700">
-        <!-- Mode Selector Dropdown -->
-        <div class="relative">
-          <button (click)="showModeSelector.set(!showModeSelector())" title="Change Mode" class="flex-shrink-0 w-11 h-11 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-600">
-             <span class="text-xl">{{ currentModeIcon() }}</span>
-          </button>
-          @if(showModeSelector()) {
-            <div class="absolute bottom-full mb-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 p-2 animate-in fade-in zoom-in-95">
-              @for(mode of therapyModes; track mode.id) {
-                <button (click)="changeMode(mode.id)" class="w-full text-left flex items-center gap-3 p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700" [class.bg-slate-100]="currentMode() === mode.id" [class.dark:bg-slate-700]="currentMode() === mode.id">
-                  <span class="text-xl">{{ mode.icon }}</span>
-                  <div>
-                    <p class="font-semibold">{{ mode.label }}</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ mode.description }}</p>
-                  </div>
-                </button>
-              }
-            </div>
+      <div class="bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+        <!-- Formatting Toolbar -->
+        <div class="p-2 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+          <div class="flex items-center gap-1">
+            <button (click)="formatText('bold')" title="Bold (Ctrl+B)" class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 font-bold">B</button>
+            <button (click)="formatText('italic')" title="Italic (Ctrl+I)" class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 italic">I</button>
+            <button (click)="formatText('list')" title="List" class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-slate-100 dark:hover:bg-slate-700">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>
+            </button>
+          </div>
+          @if(showCharCount()) {
+            <span class="text-xs font-mono" [class.text-red-500]="charCount() > 2000">{{ charCount() }} / 2000</span>
           }
         </div>
-        
-        <textarea #textarea appTextareaAutoresize class="flex-grow p-2.5 bg-transparent focus:ring-0 resize-none border-none max-h-40" rows="1" placeholder="What's on your mind?" [ngModel]="userInput()" (ngModelChange)="userInput.set($event)" (keydown)="handleKeydown($event)"></textarea>
-        
-        <button (click)="sendMessage()" [disabled]="userInput().trim() === '' || isLoading()" class="flex-shrink-0 w-11 h-11 bg-[rgb(var(--primary))] text-white rounded-xl flex items-center justify-center transition-all duration-200 ease-in-out disabled:bg-slate-400 disabled:dark:bg-slate-600 disabled:cursor-not-allowed hover:bg-[rgb(var(--primary-focus))] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[rgb(var(--primary))] dark:ring-offset-slate-800">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-          </svg>
-        </button>
+        <div class="relative flex items-end space-x-3 p-2">
+          <!-- Mode Selector Dropdown -->
+          <div class="relative">
+            <button (click)="showModeSelector.set(!showModeSelector())" title="Change Mode" class="flex-shrink-0 w-11 h-11 bg-slate-100 dark:bg-slate-700 rounded-xl flex items-center justify-center transition-colors hover:bg-slate-200 dark:hover:bg-slate-600">
+               <span class="text-xl">{{ currentModeIcon() }}</span>
+            </button>
+            @if(showModeSelector()) {
+              <div class="absolute bottom-full mb-2 w-64 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-slate-200 dark:border-slate-700 p-2 animate-in fade-in zoom-in-95">
+                @for(mode of therapyModes; track mode.id) {
+                  <button (click)="changeMode(mode.id)" class="w-full text-left flex items-center gap-3 p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700" [class.bg-slate-100]="currentMode() === mode.id" [class.dark:bg-slate-700]="currentMode() === mode.id">
+                    <span class="text-xl">{{ mode.icon }}</span>
+                    <div>
+                      <p class="font-semibold">{{ mode.label }}</p>
+                      <p class="text-xs text-slate-500 dark:text-slate-400">{{ mode.description }}</p>
+                    </div>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+          
+          <textarea #textInput appTextareaAutoresize class="flex-grow p-2.5 bg-transparent focus:ring-0 resize-none border-none max-h-40" rows="1" placeholder="What's on your mind?" [ngModel]="userInput()" (ngModelChange)="userInput.set($event)" (keydown)="handleKeydown($event)"></textarea>
+          
+          <button (click)="sendMessage()" [disabled]="userInput().trim() === '' || isLoading()" class="flex-shrink-0 w-11 h-11 bg-[rgb(var(--primary))] text-white rounded-xl flex items-center justify-center transition-all duration-200 ease-in-out disabled:bg-slate-400 disabled:dark:bg-slate-600 disabled:cursor-not-allowed hover:bg-[rgb(var(--primary-focus))] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[rgb(var(--primary))] dark:ring-offset-slate-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="19" x2="12" y2="5" />
+                <polyline points="5 12 12 5 19 12" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   </footer>
@@ -152,13 +189,13 @@
         <div class="border-b border-slate-200 dark:border-slate-700">
           <nav class="-mb-px flex space-x-6">
             <button (click)="settingsTab.set('theme')" class="py-3 px-1 border-b-2 font-medium text-sm" [class.border-[rgb(var(--primary))]]="settingsTab() === 'theme'" [class.text-[rgb(var(--primary))]]="settingsTab() === 'theme'" [class.border-transparent]="settingsTab() !== 'theme'" [class.text-slate-500]="settingsTab() !== 'theme'" [class.hover:text-slate-700]="settingsTab() !== 'theme'" [class.dark:text-slate-400]="settingsTab() !== 'theme'" [class.dark:hover:text-slate-300]="settingsTab() !== 'theme'">
-              Theme
+              Appearance
+            </button>
+             <button (click)="settingsTab.set('profile')" class="py-3 px-1 border-b-2 font-medium text-sm" [class.border-[rgb(var(--primary))]]="settingsTab() === 'profile'" [class.text-[rgb(var(--primary))]]="settingsTab() === 'profile'" [class.border-transparent]="settingsTab() !== 'profile'" [class.text-slate-500]="settingsTab() !== 'profile'" [class.hover:text-slate-700]="settingsTab() !== 'profile'" [class.dark:text-slate-400]="settingsTab() !== 'profile'" [class.dark:hover:text-slate-300]="settingsTab() !== 'profile'">
+              Profile
             </button>
             <button (click)="settingsTab.set('mood')" class="py-3 px-1 border-b-2 font-medium text-sm" [class.border-[rgb(var(--primary))]]="settingsTab() === 'mood'" [class.text-[rgb(var(--primary))]]="settingsTab() === 'mood'" [class.border-transparent]="settingsTab() !== 'mood'" [class.text-slate-500]="settingsTab() !== 'mood'" [class.hover:text-slate-700]="settingsTab() !== 'mood'" [class.dark:text-slate-400]="settingsTab() !== 'mood'" [class.dark:hover:text-slate-300]="settingsTab() !== 'mood'">
               My Mood
-            </button>
-            <button (click)="settingsTab.set('account')" class="py-3 px-1 border-b-2 font-medium text-sm" [class.border-[rgb(var(--primary))]]="settingsTab() === 'account'" [class.text-[rgb(var(--primary))]]="settingsTab() === 'account'" [class.border-transparent]="settingsTab() !== 'account'" [class.text-slate-500]="settingsTab() !== 'account'" [class.hover:text-slate-700]="settingsTab() !== 'account'" [class.dark:text-slate-400]="settingsTab() !== 'account'" [class.dark:hover:text-slate-300]="settingsTab() !== 'account'">
-              Account
             </button>
           </nav>
         </div>
@@ -166,25 +203,64 @@
         <div class="pt-6">
           @switch (settingsTab()) {
             @case ('theme') {
-              <div>
-                <h3 class="font-semibold text-slate-800 dark:text-slate-100 mb-3">Choose a Theme</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  @for (theme of themeService.themes(); track theme.id) {
-                    <button (click)="selectTheme(theme)" class="flex flex-col items-center p-3 rounded-lg border-2 transition-colors" [class.border-[rgb(var(--primary))] ]="themeService.currentTheme().id === theme.id" [class.border-slate-200]="themeService.currentTheme().id !== theme.id" [class.dark:border-slate-600]="themeService.currentTheme().id !== theme.id">
-                      <div class="w-10 h-10 rounded-full mb-2" [style.backgroundColor]="theme.color"></div>
-                      <span class="text-sm font-medium">{{ theme.name }}</span>
-                    </button>
-                  }
+              <div class="space-y-6">
+                 <div>
+                    <h3 class="font-semibold text-slate-800 dark:text-slate-100 mb-3">Display Mode</h3>
+                    <div class="flex items-center gap-2 p-1 bg-slate-100 dark:bg-slate-700 rounded-lg">
+                      <button (click)="toggleDisplayMode('light')" class="flex-1 py-1.5 text-sm font-semibold rounded-md transition-colors" [class.bg-white]="themeService.displayMode() === 'light'" [class.dark:bg-slate-600]="themeService.displayMode() === 'light'" [class.text-slate-800]="themeService.displayMode() === 'light'" [class.dark:text-slate-100]="themeService.displayMode() === 'light'" [class.text-slate-500]="themeService.displayMode() !== 'light'">Light</button>
+                      <button (click)="toggleDisplayMode('dark')" class="flex-1 py-1.5 text-sm font-semibold rounded-md transition-colors" [class.bg-white]="themeService.displayMode() === 'dark'" [class.dark:bg-slate-600]="themeService.displayMode() === 'dark'" [class.text-slate-800]="themeService.displayMode() === 'dark'" [class.dark:text-slate-100]="themeService.displayMode() === 'dark'" [class.text-slate-500]="themeService.displayMode() !== 'dark'">Dark</button>
+                      <button (click)="toggleDisplayMode('system')" class="flex-1 py-1.5 text-sm font-semibold rounded-md transition-colors" [class.bg-white]="themeService.displayMode() === 'system'" [class.dark:bg-slate-600]="themeService.displayMode() === 'system'" [class.text-slate-800]="themeService.displayMode() === 'system'" [class.dark:text-slate-100]="themeService.displayMode() === 'system'" [class.text-slate-500]="themeService.displayMode() !== 'system'">System</button>
+                    </div>
+                  </div>
+                <div>
+                  <h3 class="font-semibold text-slate-800 dark:text-slate-100 mb-3">Color Theme</h3>
+                  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    @for (theme of themeService.themes(); track theme.id) {
+                      <button (click)="selectTheme(theme)" class="flex flex-col items-center p-3 rounded-lg border-2 transition-colors" [class.border-[rgb(var(--primary))] ]="themeService.currentTheme().id === theme.id" [class.border-slate-200]="themeService.currentTheme().id !== theme.id" [class.dark:border-slate-600]="themeService.currentTheme().id !== theme.id">
+                        <div class="w-10 h-10 rounded-full mb-2" [style.backgroundColor]="theme.color"></div>
+                        <span class="text-sm font-medium">{{ theme.name }}</span>
+                      </button>
+                    }
+                  </div>
                 </div>
               </div>
             }
-            @case ('account') {
-               <div>
-                  <h3 class="font-semibold text-slate-800 dark:text-slate-100 mb-3">Account Details</h3>
-                  <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Signed in as {{ currentUser()?.email }}</p>
-                  <button (click)="signOut()" class="w-full px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
-                    Sign Out
-                  </button>
+             @case ('profile') {
+               <div class="flex items-start gap-6">
+                  <div class="relative">
+                    <div class="w-24 h-24 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center overflow-hidden">
+                       @if (userAvatarUrl()) {
+                        <img [src]="userAvatarUrl()" alt="User avatar" class="w-full h-full object-cover">
+                      } @else {
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-slate-400 dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                          <circle cx="12" cy="7" r="4" />
+                        </svg>
+                      }
+                    </div>
+                     @if(uploadingAvatar()) {
+                      <div class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-full">
+                        <div class="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    }
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="font-semibold text-slate-800 dark:text-slate-100">Profile Picture</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Signed in as {{ currentUser()?.email }}</p>
+                    <label for="avatar-upload" class="cursor-pointer px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold rounded-lg hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors inline-block">
+                      Change Avatar
+                    </label>
+                    <input type="file" id="avatar-upload" class="hidden" (change)="handleAvatarUpload($event)" accept="image/png, image/jpeg">
+                    @if (avatarError()) {
+                      <p class="text-xs text-red-500 mt-2">{{ avatarError() }}</p>
+                    }
+                     <hr class="my-6 border-slate-200 dark:border-slate-700">
+                     <h3 class="font-semibold text-slate-800 dark:text-slate-100">Account</h3>
+                     <p class="text-sm text-slate-500 dark:text-slate-400 mb-3">Manage your session.</p>
+                     <button (click)="signOut()" class="w-full md:w-auto px-4 py-2 bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 font-semibold rounded-lg hover:bg-red-200 dark:hover:bg-red-800/70 transition-colors">
+                      Sign Out
+                    </button>
+                  </div>
                 </div>
             }
             @case ('mood') {
@@ -323,7 +399,7 @@
 
 } @else {
 <!-- Auth Screen -->
-<div class="flex flex-col items-center justify-center h-screen w-screen bg-gradient-to-br from-[var(--bg-gradient-from)] to-[var(--bg-gradient-to)] dark:from-[var(--dark-bg-gradient-from)] dark:to-[var(--dark-bg-gradient-to)] text-slate-800 dark:text-slate-200 p-4">
+<div class="flex flex-col items-center justify-center h-screen w-screen bg-gradient-to-br from-[var(--bg-gradient-from)] to-[var(--bg-gradient-to)] text-slate-800 dark:text-slate-200 p-4">
   <div class="w-full max-w-sm">
     <div class="text-center mb-8">
       <div class="inline-block p-3 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-2xl mb-4">
@@ -336,49 +412,122 @@
       <p class="text-slate-600 dark:text-slate-300 mt-2">Your companion for reflection and support.</p>
     </div>
 
-    <form (submit)="handleAuth(); $event.preventDefault()" class="bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm shadow-lg border border-white/30 dark:border-slate-700/50 rounded-2xl p-8 space-y-6">
-      <h2 class="text-2xl font-bold text-center text-slate-800 dark:text-slate-200">{{ isSigningUp() ? 'Create Account' : 'Sign In' }}</h2>
-      
-      <div>
-        <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
-        <input id="email" type="email" required [ngModel]="authEmail()" (ngModelChange)="authEmail.set($event)" name="email"
-               class="w-full px-3 py-2 bg-slate-100/70 dark:bg-slate-700/80 border-2 border-slate-200 dark:border-slate-600 rounded-md focus:outline-none focus:border-[rgb(var(--primary))] focus:ring-0 transition-colors">
-      </div>
-      
-      <div>
-        <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Password</label>
-        <div class="relative">
-          <input id="password" [type]="showPassword() ? 'text' : 'password'" required [ngModel]="authPassword()" (ngModelChange)="authPassword.set($event)" name="password" minlength="6"
-                 class="w-full px-3 py-2 pr-10 bg-slate-100/70 dark:bg-slate-700/80 border-2 border-slate-200 dark:border-slate-600 rounded-md focus:outline-none focus:border-[rgb(var(--primary))] focus:ring-0 transition-colors">
-          <button type="button" (click)="showPassword.set(!showPassword())" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
-            @if(showPassword()) {
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074L3.707 2.293zM10 12a2 2 0 110-4 2 2 0 010 4z" clip-rule="evenodd" /><path d="M10 17a7 7 0 01-7-7c0-1.92.76-3.664 2-4.994a7.03 7.03 0 012.353-1.637l-1.3-1.3A9 9 0 00.458 10c1.274 4.057 5.064 7 9.542 7 1.848 0 3.58-.51 5.063-1.4l-1.28-1.28A7.018 7.018 0 0110 17z" /></svg>
-            } @else {
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
-            }
-          </button>
-        </div>
-        @if (isSigningUp()) {
-            <p class="text-xs text-slate-500 mt-1">Minimum 6 characters.</p>
+    <div class="relative bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm shadow-lg border border-white/30 dark:border-slate-700/50 rounded-2xl p-8 space-y-6 overflow-hidden">
+      @switch (authScreen()) {
+        @case ('signIn') {
+          <form (submit)="handleAuth(); $event.preventDefault()" class="space-y-6 animate-in fade-in">
+            <h2 class="text-2xl font-bold text-center text-slate-800 dark:text-slate-200">Sign In</h2>
+            <div>
+              <label for="email-in" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
+              <input id="email-in" type="email" required [ngModel]="authEmail()" (ngModelChange)="authEmail.set($event)" name="email-in"
+                     class="w-full px-3 py-2 bg-slate-100/70 dark:bg-slate-700/80 border-2 border-slate-200 dark:border-slate-600 rounded-md focus:outline-none focus:border-[rgb(var(--primary))] focus:ring-0 transition-colors">
+            </div>
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <label for="password-in" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Password</label>
+                 <button type="button" (click)="switchAuthView('forgotPassword')" class="text-sm font-medium text-[rgb(var(--primary))] hover:underline">Forgot?</button>
+              </div>
+              <div class="relative">
+                <input id="password-in" [type]="showPassword() ? 'text' : 'password'" required [ngModel]="authPassword()" (ngModelChange)="authPassword.set($event)" name="password-in" minlength="6"
+                       class="w-full px-3 py-2 pr-10 bg-slate-100/70 dark:bg-slate-700/80 border-2 border-slate-200 dark:border-slate-600 rounded-md focus:outline-none focus:border-[rgb(var(--primary))] focus:ring-0 transition-colors">
+                <button type="button" (click)="showPassword.set(!showPassword())" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
+                  @if(showPassword()) {
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  } @else {
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  }
+                </button>
+              </div>
+            </div>
+             <button type="submit" [disabled]="authLoading()" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-[rgb(var(--primary-content))] bg-[rgb(var(--primary))] hover:bg-[rgb(var(--primary-focus))] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[rgb(var(--primary))] dark:ring-offset-slate-800 disabled:bg-slate-400 disabled:cursor-wait transition-colors">
+              @if(authLoading()) { <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> } @else { Sign In }
+            </button>
+             <p class="text-sm text-center text-slate-600 dark:text-slate-400">
+              Don't have an account? <button type="button" (click)="switchAuthView('signUp')" class="font-medium text-[rgb(var(--primary))] hover:underline">Sign Up</button>
+            </p>
+          </form>
         }
-      </div>
-
-      @if(authError()) {
-        <p class="text-sm text-red-500 text-center">{{ authError() }}</p>
+        @case ('signUp') {
+          <form (submit)="handleAuth(); $event.preventDefault()" class="space-y-4 animate-in fade-in">
+            <h2 class="text-2xl font-bold text-center text-slate-800 dark:text-slate-200">Create Account</h2>
+            <div>
+              <label for="email-up" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
+              <input id="email-up" type="email" required [ngModel]="authEmail()" (ngModelChange)="authEmail.set($event)" name="email-up" class="w-full px-3 py-2 bg-slate-100/70 dark:bg-slate-700/80 border-2 border-slate-200 dark:border-slate-600 rounded-md focus:outline-none focus:border-[rgb(var(--primary))] focus:ring-0 transition-colors">
+            </div>
+            <div>
+              <label for="password-up" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Password</label>
+              <div class="relative">
+                <input id="password-up" [type]="showPassword() ? 'text' : 'password'" required [ngModel]="authPassword()" (ngModelChange)="authPassword.set($event)" name="password-up" minlength="6" class="w-full px-3 py-2 pr-10 bg-slate-100/70 dark:bg-slate-700/80 border-2 border-slate-200 dark:border-slate-600 rounded-md focus:outline-none focus:border-[rgb(var(--primary))] focus:ring-0 transition-colors" [class.border-red-500]="authPassword().length > 0 && authPassword().length < 6">
+                <button type="button" (click)="showPassword.set(!showPassword())" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 dark:text-slate-400">
+                  @if(showPassword()) {
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  } @else {
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  }
+                </button>
+              </div>
+              @if (authPassword().length > 0 && authPassword().length < 6) { <p class="text-xs text-red-500 mt-1">Minimum 6 characters.</p> }
+            </div>
+             <div>
+              <label for="confirm-password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Confirm Password</label>
+              <input id="confirm-password" type="password" required [ngModel]="confirmPassword()" (ngModelChange)="confirmPassword.set($event)" name="confirm-password" minlength="6" class="w-full px-3 py-2 bg-slate-100/70 dark:bg-slate-700/80 border-2 rounded-md focus:outline-none focus:border-[rgb(var(--primary))] focus:ring-0 transition-colors" [class.border-slate-200]="confirmPassword().length === 0 || passwordsMatch()" [class.dark:border-slate-600]="confirmPassword().length === 0 || passwordsMatch()" [class.border-red-500]="confirmPassword().length > 0 && !passwordsMatch()" [class.dark:border-red-500]="confirmPassword().length > 0 && !passwordsMatch()">
+              @if (confirmPassword().length > 0 && !passwordsMatch()) { <p class="text-xs text-red-500 mt-1">Passwords do not match.</p> }
+            </div>
+            <button type="submit" [disabled]="authLoading() || !passwordsMatch() || authPassword().length < 6" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-[rgb(var(--primary-content))] bg-[rgb(var(--primary))] hover:bg-[rgb(var(--primary-focus))] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[rgb(var(--primary))] dark:ring-offset-slate-800 disabled:bg-slate-400 disabled:cursor-not-allowed transition-colors">
+              @if(authLoading()) { <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> } @else { Create Account }
+            </button>
+            <p class="text-sm text-center text-slate-600 dark:text-slate-400">
+              Already have an account? <button type="button" (click)="switchAuthView('signIn')" class="font-medium text-[rgb(var(--primary))] hover:underline">Sign In</button>
+            </p>
+          </form>
+        }
+        @case ('forgotPassword') {
+          <div class="animate-in fade-in">
+            @if (resetSent()) {
+              <div class="text-center">
+                <h2 class="text-2xl font-bold text-center text-slate-800 dark:text-slate-200 mb-4">Check Your Email</h2>
+                <p class="text-slate-600 dark:text-slate-400 mb-6">A password reset link has been sent to <strong>{{ authEmail() }}</strong> if an account with that email exists.</p>
+                <button type="button" (click)="switchAuthView('signIn')" class="font-medium text-[rgb(var(--primary))] hover:underline">Back to Sign In</button>
+              </div>
+            } @else {
+              <form (submit)="handleAuth(); $event.preventDefault()" class="space-y-6">
+                <h2 class="text-2xl font-bold text-center text-slate-800 dark:text-slate-200">Reset Password</h2>
+                <p class="text-sm text-center text-slate-600 dark:text-slate-400">Enter your email and we'll send you a link to get back into your account.</p>
+                <div>
+                  <label for="email-forgot" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
+                  <input id="email-forgot" type="email" required [ngModel]="authEmail()" (ngModelChange)="authEmail.set($event)" name="email-forgot"
+                         class="w-full px-3 py-2 bg-slate-100/70 dark:bg-slate-700/80 border-2 border-slate-200 dark:border-slate-600 rounded-md focus:outline-none focus:border-[rgb(var(--primary))] focus:ring-0 transition-colors">
+                </div>
+                <button type="submit" [disabled]="authLoading()" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-[rgb(var(--primary-content))] bg-[rgb(var(--primary))] hover:bg-[rgb(var(--primary-focus))] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[rgb(var(--primary))] dark:ring-offset-slate-800 disabled:bg-slate-400 disabled:cursor-wait transition-colors">
+                  @if(authLoading()) { <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> } @else { Send Reset Link }
+                </button>
+                <p class="text-sm text-center text-slate-600 dark:text-slate-400">
+                  <button type="button" (click)="switchAuthView('signIn')" class="font-medium text-[rgb(var(--primary))] hover:underline">Back to Sign In</button>
+                </p>
+              </form>
+            }
+          </div>
+        }
       }
-      
-      <button type="submit" [disabled]="authLoading()" 
-              class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-[rgb(var(--primary-content))] bg-[rgb(var(--primary))] hover:bg-[rgb(var(--primary-focus))] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[rgb(var(--primary))] dark:ring-offset-slate-800 disabled:bg-slate-400 disabled:cursor-wait transition-colors">
-        {{ authLoading() ? (isSigningUp() ? 'Creating Account...' : 'Signing In...') : (isSigningUp() ? 'Sign Up' : 'Sign In') }}
-      </button>
 
-      <p class="text-sm text-center text-slate-600 dark:text-slate-400">
-        {{ isSigningUp() ? 'Already have an account?' : "Don't have an account?" }}
-        <button type="button" (click)="isSigningUp.set(!isSigningUp()); authError.set(null);" class="font-medium text-[rgb(var(--primary))] hover:underline">
-          {{ isSigningUp() ? 'Sign In' : 'Sign Up' }}
-        </button>
-      </p>
-    </form>
+      @if (authError()) {
+        <div class="absolute bottom-0 left-0 right-0 p-3 bg-red-100 dark:bg-red-900/50 text-center animate-in fade-in">
+          <p class="text-sm font-medium text-red-700 dark:text-red-300">{{ authError() }}</p>
+        </div>
+      }
+    </div>
   </div>
 </div>
 }

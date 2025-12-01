@@ -1,5 +1,5 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { GoogleGenAI, GenerateContentResponse, Content } from '@google/genai';
+import { GoogleGenAI, Content } from '@google/genai';
 import { Message, TherapyMode, TherapyModeDetails } from '../models/chat.model';
 import { SupabaseService } from './supabase.service';
 import { AuthService } from './auth.service';
@@ -18,6 +18,7 @@ export class GeminiService {
   
   readonly messages = signal<Message[]>([]);
   readonly isLoading = signal<boolean>(false);
+  readonly streamingResponse = signal<Message | null>(null);
   
   private userLoggedIn = computed(() => !!this.user());
 
@@ -30,16 +31,13 @@ export class GeminiService {
   ];
 
   constructor() {
-    // FIX: Use environment variable for API key instead of hardcoding it.
     this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-    // React to user login
     toObservable(this.user).pipe(
       filter(user => !!user),
       switchMap(() => this.loadMessages())
     ).subscribe();
 
-    // Reset messages on logout
     effect(() => {
       if (!this.user()) {
         this.messages.set([]);
@@ -83,45 +81,36 @@ export class GeminiService {
         timestamp: new Date()
       };
       this.messages.update(msgs => [...msgs, modeChangeMessage]);
+      this.saveMessage(modeChangeMessage);
   }
 
   async sendMessage(prompt: string): Promise<void> {
     const userId = this.user()?.id;
     if (!userId) return;
 
-    this.isLoading.set(true);
     const userMessage: Message = {
       id: self.crypto.randomUUID(),
       role: 'user',
       content: prompt,
       timestamp: new Date(),
-      // FIX: Use user_id to match the Message model
       user_id: userId,
     };
     this.messages.update(msgs => [...msgs, userMessage]);
     await this.saveMessage(userMessage);
 
-    await this.generateAndSaveAssistantResponse();
+    await this.generateStreamingResponse();
   }
   
   async resubmitConversation(messageId: string, newContent: string): Promise<void> {
-    this.isLoading.set(true);
-    
-    // Find the message to get its original timestamp
     const originalMessage = this.messages().find(m => m.id === messageId);
     if (!originalMessage) {
         console.error('Original message not found for editing.');
-        this.isLoading.set(false);
         return;
     }
 
-    // 1. Update the message content in the database
     await this.updateMessageContent(messageId, newContent);
-
-    // 2. Delete all subsequent messages from the database
     await this.deleteMessagesAfter(originalMessage.timestamp);
 
-    // 3. Update local state: update content and remove subsequent messages
     this.messages.update(msgs => {
         const messageIndex = msgs.findIndex(m => m.id === messageId);
         if (messageIndex === -1) return msgs;
@@ -131,47 +120,59 @@ export class GeminiService {
         return updatedMessages;
     });
 
-    // 4. Generate a new response from the AI
-    await this.generateAndSaveAssistantResponse();
+    await this.generateStreamingResponse();
   }
   
-  private async generateAndSaveAssistantResponse(): Promise<void> {
+  private async generateStreamingResponse(): Promise<void> {
     const userId = this.user()?.id;
-    if (!userId) {
-        this.isLoading.set(false);
-        return;
-    };
+    if (!userId) return;
+
+    this.isLoading.set(true);
+    const streamingId = self.crypto.randomUUID();
+    let accumulatedContent = '';
 
     try {
       const history: Content[] = this.messages()
-        .filter(m => m.id !== 'init1') // Exclude initial greeting from API history
+        .filter(m => m.id !== 'init1')
         .map(message => ({
           role: message.role === 'user' ? 'user' : 'model',
           parts: [{ text: message.content }],
-      }));
+        }));
 
-      const result: GenerateContentResponse = await this.ai.models.generateContent({
+      const stream = await this.ai.models.generateContentStream({
         model: 'gemini-2.5-flash',
         contents: history,
         config: {
           systemInstruction: this.getSystemPrompt(),
         }
       });
+
+      for await (const chunk of stream) {
+        accumulatedContent += chunk.text;
+        this.streamingResponse.set({
+          id: streamingId,
+          role: 'assistant',
+          content: accumulatedContent,
+          timestamp: new Date(),
+          user_id: userId
+        });
+      }
       
-      const assistantMessage: Message = {
-        id: self.crypto.randomUUID(),
+      const finalAssistantMessage: Message = {
+        id: streamingId,
         role: 'assistant',
-        content: result.text,
+        content: accumulatedContent,
         timestamp: new Date(),
         user_id: userId,
       };
-      this.messages.update(msgs => [...msgs, assistantMessage]);
-      await this.saveMessage(assistantMessage);
+      
+      this.messages.update(msgs => [...msgs, finalAssistantMessage]);
+      await this.saveMessage(finalAssistantMessage);
 
     } catch (error) {
-      console.error('Error generating response from Gemini API:', error);
+      console.error('Error generating streaming response:', error);
       const errorMessage: Message = {
-        id: self.crypto.randomUUID(),
+        id: streamingId,
         role: 'assistant',
         content: 'I am having trouble connecting right now. Please try again in a moment.',
         timestamp: new Date(),
@@ -180,6 +181,7 @@ export class GeminiService {
       this.messages.update(msgs => [...msgs, errorMessage]);
       await this.saveMessage(errorMessage);
     } finally {
+      this.streamingResponse.set(null);
       this.isLoading.set(false);
     }
   }
@@ -242,7 +244,7 @@ export class GeminiService {
 # AI Therapy Companion System Prompt
 
 ## Your Role
-You are a compassionate, non-judgmental mental wellness companion. You are NOT a licensed therapist, psychologist, or medical professional. You are a supportive conversation partner trained in evidence-based therapeutic techniques.
+You are a compassionate, non-judgmental mental wellness companion. You are NOT a licensed therapist, psychologist, or medical professional. You are a supportive conversation partner trained in evidence-based therapeutic techniques. You can use Markdown for formatting your responses (e.g., **bold**, *italics*, lists).
 
 ## Core Principles
 
