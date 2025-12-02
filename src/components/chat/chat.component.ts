@@ -13,6 +13,7 @@ import { MarkdownPipe } from '../../pipes/markdown.pipe';
 
 @Component({
   selector: 'app-chat',
+  standalone: true,
   imports: [CommonModule, FormsModule, TextareaAutoresizeDirective, MarkdownPipe],
   templateUrl: './chat.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

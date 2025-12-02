@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lightspace: AI Therapy Companion</title>
+  <title>Mindspace: AI Therapy Companion</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -98,8 +98,8 @@
   </style>
   <script>
     (function() {
-      const theme = localStorage.getItem('lightspace-theme') || 'theme-default';
-      let displayMode = localStorage.getItem('lightspace-display-mode') || 'system';
+      const theme = localStorage.getItem('mindspace-theme') || 'theme-default';
+      let displayMode = localStorage.getItem('mindspace-display-mode') || 'system';
 
       document.documentElement.classList.add(theme);
       
@@ -132,7 +132,8 @@
     "@angular/forms": "https://next.esm.sh/@angular/forms@^21.0.2?external=rxjs",
     "@angular/core/rxjs-interop": "https://next.esm.sh/@angular/core@^21.0.2/rxjs-interop?external=rxjs",
     "@supabase/supabase-js": "https://next.esm.sh/@supabase/supabase-js@^2.86.0?external=rxjs",
-    "marked": "https://esm.sh/marked@^14.0.0"
+    "marked": "https://esm.sh/marked@^14.0.0",
+    "@angular/router": "https://next.esm.sh/@angular/router@^21.0.2?external=rxjs"
   }
 }
 </script>

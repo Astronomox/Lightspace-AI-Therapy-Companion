@@ -7,8 +7,8 @@ export type DisplayMode = 'light' | 'dark' | 'system';
   providedIn: 'root',
 })
 export class ThemeService {
-  private readonly THEME_KEY = 'lightspace-theme';
-  private readonly DISPLAY_MODE_KEY = 'lightspace-display-mode';
+  private readonly THEME_KEY = 'mindspace-theme';
+  private readonly DISPLAY_MODE_KEY = 'mindspace-display-mode';
 
   readonly themes = signal<Theme[]>([
     { id: 'default', name: 'Aurora Blue', class: 'theme-default', color: 'rgb(96 165 250)' },

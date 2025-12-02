@@ -1,20 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ChatComponent } from './components/chat/chat.component';
-import { ThemeService } from './services/theme.service';
-import { SupabaseService } from './services/supabase.service';
-import { AuthService } from './services/auth.service';
-import { MoodService } from './services/mood.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ChatComponent]
+  imports: [RouterOutlet]
 })
-export class AppComponent {
-  // Inject services to ensure they're initialized on startup
-  private themeService = inject(ThemeService);
-  private supabaseService = inject(SupabaseService);
-  private authService = inject(AuthService);
-  private moodService = inject(MoodService);
-}
+export class AppComponent {}

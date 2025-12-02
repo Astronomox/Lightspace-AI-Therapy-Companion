@@ -1,0 +1,52 @@
+<!-- The body styles from index.html are overridden for this full-screen component -->
+<div class="relative w-screen h-screen overflow-hidden bg-slate-900">
+  <!-- Background Image -->
+  <div class="absolute inset-0 bg-cover bg-center transition-opacity duration-1000 opacity-0 animate-[fadeIn_2s_ease-in-out_forwards]" 
+       style="background-image: url('https://images.unsplash.com/photo-1508249254148-3a6d36b4a20c?q=80&w=2940&auto=format&fit=crop')">
+  </div>
+  <!-- Overlay -->
+  <div class="absolute inset-0 bg-black/60"></div>
+
+  <!-- Content -->
+  <div class="relative z-10 flex flex-col items-center justify-center h-full text-center text-white p-4">
+    <div class="animate-[fadeInUp_1s_ease-out_0.5s_forwards] opacity-0">
+      <h1 class="text-6xl md:text-8xl font-black text-white tracking-tighter animate-glow">Mindspace</h1>
+      <p class="mt-4 text-lg md:text-2xl text-slate-300 max-w-2xl">
+        A quiet place for your thoughts. A sanctuary for reflection and growth.
+      </p>
+    </div>
+    
+    <a routerLink="/chat" class="mt-12 px-8 py-4 text-lg font-semibold text-white bg-white/10 rounded-full border-2 border-white/50 backdrop-blur-sm 
+                                 hover:bg-white/20 hover:border-white/80 transition-all duration-300 
+                                 transform hover:scale-105 animate-pulse-slow
+                                 animate-[fadeInUp_1s_ease-out_1s_forwards] opacity-0">
+      Enter Sanctuary
+    </a>
+  </div>
+  
+  <style>
+    @keyframes fadeIn {
+      to { opacity: 0.5; }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.4), 0 0 20px rgba(255, 255, 255, 0.3), 0 0 30px rgba(167, 139, 250, 0.2); }
+      50% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.5), 0 0 40px rgba(167, 139, 250, 0.4); }
+    }
+    .animate-glow {
+      animation: glow 4s ease-in-out infinite;
+    }
+    .animate-pulse-slow {
+       animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse {
+      50% {
+        opacity: .8;
+        transform: scale(1.02);
+      }
+    }
+  </style>
+</div>

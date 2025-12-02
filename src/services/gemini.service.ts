@@ -233,7 +233,7 @@ export class GeminiService {
     return {
       id: 'init1',
       role: 'assistant',
-      content: "Welcome to Lightspace. I'm here to listen. What's on your mind today?",
+      content: "Welcome to Mindspace. I'm here to listen. What's on your mind today?",
       timestamp: new Date()
     };
   }
